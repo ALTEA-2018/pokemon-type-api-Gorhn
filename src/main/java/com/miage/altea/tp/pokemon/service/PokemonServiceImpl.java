@@ -2,28 +2,45 @@ package com.miage.altea.tp.pokemon.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.miage.altea.tp.pokemon.bo.Pokemon;
 import com.miage.altea.tp.pokemon.repository.PokemonRepository;
+import com.miage.altea.tp.pokemon.repository.TranslationRepository;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
 	
-	public PokemonRepository pokemonRepository;
+	@Autowired
+	public PokemonRepository pokemonRepositoryImpl;
+	
+	@Autowired
+	public TranslationRepository translationRepositoryImpl;
 
-	public PokemonServiceImpl(PokemonRepository repository) {
-		pokemonRepository = repository;
-    }
+	public PokemonServiceImpl() { }
+	
+	public void setPokemonRepository(PokemonRepository repository) {
+		this.pokemonRepositoryImpl = repository;
+	}
+	
+	public void setTranslationRepository(TranslationRepository repository) {
+		this.translationRepositoryImpl = repository;
+	}
 
     @Override
     public Pokemon getPokemon(int id) {
-        return pokemonRepository.findPokemonById(id);
+    	String name = this.translationRepositoryImpl.getPokemonName(id, LocaleContextHolder.getLocale());
+        Pokemon pokemon = this.pokemonRepositoryImpl.findPokemonById(id);
+
+        pokemon.setName(name);
+        return pokemon;
     }
 
     @Override
     public List<Pokemon> getAllPokemon() {
-        return pokemonRepository.findAllPokemon();
+        return pokemonRepositoryImpl.findAllPokemon();
     }
 
 }
