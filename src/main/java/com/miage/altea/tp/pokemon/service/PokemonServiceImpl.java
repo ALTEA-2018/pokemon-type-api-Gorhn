@@ -44,7 +44,9 @@ public class PokemonServiceImpl implements PokemonService {
         List<Pokemon> pokemons =  pokemonRepositoryImpl.findAllPokemon();
         return pokemons.stream()
         .map(pokemon -> {
-        	pokemon.setName(translationRepositoryImpl.getPokemonName(pokemon.getId(), LocaleContextHolder.getLocale()));
+        	String translatedName = translationRepositoryImpl.getPokemonName(pokemon.getId(), LocaleContextHolder.getLocale());
+        	System.out.println("Found name ["+translatedName+"] for the locale "+LocaleContextHolder.getLocale());
+        	pokemon.setName(translatedName);
         	return pokemon;
         })
         .collect(Collectors.toList());
