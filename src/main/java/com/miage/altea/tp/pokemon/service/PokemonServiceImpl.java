@@ -1,6 +1,7 @@
 package com.miage.altea.tp.pokemon.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -40,7 +41,13 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public List<Pokemon> getAllPokemon() {
-        return pokemonRepositoryImpl.findAllPokemon();
+        List<Pokemon> pokemons =  pokemonRepositoryImpl.findAllPokemon();
+        return pokemons.stream()
+        .map(pokemon -> {
+        	pokemon.setName(translationRepositoryImpl.getPokemonName(pokemon.getId(), LocaleContextHolder.getLocale()));
+        	return pokemon;
+        })
+        .collect(Collectors.toList());
     }
 
 }
